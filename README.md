@@ -1,0 +1,1 @@
+# szgm-next-server
