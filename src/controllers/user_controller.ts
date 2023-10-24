@@ -61,7 +61,7 @@ export default class UserController implements Controller {
 
   private getAllLogs = async (req: Request, res: Response) => {
     try {
-      const data = await this.log.find();
+      const data = await this.log.find().sort({ date: -1 });
       if (data) {
         res.send(data);
       } else {
