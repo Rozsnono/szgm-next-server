@@ -19,7 +19,7 @@ const logSchema = new Schema(
     { versionKey: false },
 );
 
-const logModel = model("user", logSchema, "Log");
+const logModel = model("log", logSchema, "Log");
 
 
 export default logModel;
