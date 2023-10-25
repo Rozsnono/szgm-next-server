@@ -53,6 +53,12 @@ export default class UserController implements Controller {
         const savedDocument = await createdDocument.save();
         res.send(data);
       } else {
+        const body = { log: `${username} user tried to log in!`, date: new Date().toLocaleString() };
+        const createdDocument = new this.log({
+          ...body
+        });
+        createdDocument["_id"] = new mongoose.Types.ObjectId();
+        const savedDocument = await createdDocument.save();
         res.status(404).send({ message: `Felhasználó a(z) ${username} névvel nem található!` });
       }
     } catch (error: any) {
