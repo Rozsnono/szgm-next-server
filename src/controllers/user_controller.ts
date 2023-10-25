@@ -44,7 +44,7 @@ export default class UserController implements Controller {
       const password = req.query.password;
       const data = await this.user.find({ "$and": [{ user: username }, { password: password }] });
 
-      if (data) {
+      if (data.length > 0) {
         const body = { log: `${username} user loged in!`, date: new Date().toLocaleString() };
         const createdDocument = new this.log({
           ...body
