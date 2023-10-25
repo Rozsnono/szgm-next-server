@@ -43,13 +43,14 @@ export default class UserController implements Controller {
       const username = req.query.user;
       const password = req.query.password;
       const data = await this.user.find({ "$and": [{ user: username }, { password: password }] });
-      const body = { log: `${username} user loged in!`, date: new Date().toLocaleString() };
-      const createdDocument = new this.log({
-        ...body
-      });
-      createdDocument["_id"] = new mongoose.Types.ObjectId();
-      const savedDocument = await createdDocument.save();
+
       if (data) {
+        const body = { log: `${username} user loged in!`, date: new Date().toLocaleString() };
+        const createdDocument = new this.log({
+          ...body
+        });
+        createdDocument["_id"] = new mongoose.Types.ObjectId();
+        const savedDocument = await createdDocument.save();
         res.send(data);
       } else {
         res.status(404).send({ message: `Felhasználó a(z) ${username} névvel nem található!` });
