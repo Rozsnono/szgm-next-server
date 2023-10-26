@@ -26,6 +26,10 @@ export default class UserController implements Controller {
       this.getByUserName(req, res).catch(next);
     });
 
+    this.router.get("/users", (req, res, next) => {
+      this.getUser(req, res).catch(next);
+    });
+
     this.router.get("/logs", (req, res, next) => {
       this.getAllLogs(req, res).catch(next);
     });
@@ -85,6 +89,20 @@ export default class UserController implements Controller {
     }
   };
 
+  private getUser = async (req: Request, res: Response) => {
+    try {
+      const data = await this.user.find().sort({ role: 1 });
+
+      if (data.length > 0) {
+        res.send(data);
+      } else {
+        res.status(404).send({ message: `Felhasználó nem található!` });
+      }
+    } catch (error: any) {
+      res.status(400).send({ message: error.message });
+    }
+  };
+
   private getAllLogs = async (req: Request, res: Response) => {
     try {
       const data = await this.log.find().sort({ date: -1 });
@@ -136,7 +154,7 @@ export default class UserController implements Controller {
       const ban = req.params.ban == "true" ? true : false;
       const updatedDoc = await this.user.findById(id);
       const body = updatedDoc;
-      if (body) {
+      if (body && body.role != 3) {
         body.isDeleted = ban;
         const modificationResult = await this.user.replaceOne({ _id: id }, body, { runValidators: true });
         if (modificationResult.modifiedCount) {
