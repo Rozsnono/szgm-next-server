@@ -14,7 +14,7 @@ export default class UserController implements Controller {
       this.create(req, res).catch(next);
     });
 
-    this.router.put("/user", (req, res, next) => {
+    this.router.put("/user/:id", (req, res, next) => {
       this.put(req, res).catch(next);
     });
 
