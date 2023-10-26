@@ -85,7 +85,8 @@ export default class UserController implements Controller {
 
   private getSubjects = async (req: Request, res: Response) => {
     try {
-      await fetch("https://sze.vortexcode.com/ajaxfuggoseg/2021-09-01/IVIN_BMI/IVIN_BMI/IVIN_BMI_4").then(res => res.json()).then(data => {
+      const url = req.query.url;
+      await fetch("https://sze.vortexcode.com/ajaxfuggoseg/"+url).then(res => res.json()).then(data => {
         if (data) {
           res.send(data);
         } else {
