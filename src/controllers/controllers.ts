@@ -21,6 +21,10 @@ export default class UserController implements Controller {
     this.router.get("/logs", (req, res, next) => {
       this.getAllLogs(req, res).catch(next);
     });
+
+    this.router.get("/subjects", (req, res, next) => {
+      this.getSubjects(req, res).catch(next);
+    });
   }
 
 
@@ -45,7 +49,7 @@ export default class UserController implements Controller {
       const data = await this.user.find({ "$and": [{ user: username }, { password: password }] });
 
       if (data.length > 0) {
-        const body = { log: `${username} user loged in!`, date: new Date().toLocaleString("hu-HU",{timeZone:"Europe/Budapest"}) };
+        const body = { log: `${username} user loged in!`, date: new Date().toLocaleString("hu-HU", { timeZone: "Europe/Budapest" }) };
         const createdDocument = new this.log({
           ...body
         });
@@ -53,7 +57,7 @@ export default class UserController implements Controller {
         const savedDocument = await createdDocument.save();
         res.send(data);
       } else {
-        const body = { log: `${username} user tried to log in!`, date: new Date().toLocaleString("hu-HU", {timeZone:"Europe/Budapest"}) };
+        const body = { log: `${username} user tried to log in!`, date: new Date().toLocaleString("hu-HU", { timeZone: "Europe/Budapest" }) };
         const createdDocument = new this.log({
           ...body
         });
@@ -74,6 +78,21 @@ export default class UserController implements Controller {
       } else {
         res.status(404).send({ message: `Nincs log!` });
       }
+    } catch (error: any) {
+      res.status(400).send({ message: error.message });
+    }
+  }
+
+  private getSubjects = async (req: Request, res: Response) => {
+    try {
+      await fetch("https://sze.vortexcode.com/ajaxfuggoseg/2021-09-01/IVIN_BMI/IVIN_BMI/IVIN_BMI_4").then(res => res.json()).then(data => {
+        if (data) {
+          res.send(data);
+        } else {
+          res.status(404).send({ message: `Nincs data!` });
+        }
+      });
+
     } catch (error: any) {
       res.status(400).send({ message: error.message });
     }
