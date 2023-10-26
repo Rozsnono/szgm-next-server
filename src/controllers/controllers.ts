@@ -53,21 +53,27 @@ export default class UserController implements Controller {
       const ip = req.query.ip;
       const data = await this.user.find({ "$and": [{ user: username }, { password: password }] });
 
+      const logs = await this.log.find().sort({ date: -1 });
       if (data.length > 0) {
-        const body = { log: `${username} user loged in!`, ip: ip, date: new Date().toLocaleString("hu-HU", { timeZone: "Europe/Budapest" }) };
-        const createdDocument = new this.log({
-          ...body
-        });
-        createdDocument["_id"] = new mongoose.Types.ObjectId();
-        const savedDocument = await createdDocument.save();
+        if (logs[0] && !logs[0].log.includes(username as string)) {
+          const body = { log: `${username} user loged in!`, ip: ip, date: new Date().toLocaleString("hu-HU", { timeZone: "Europe/Budapest" }) };
+          const createdDocument = new this.log({
+            ...body
+          });
+          createdDocument["_id"] = new mongoose.Types.ObjectId();
+          const savedDocument = await createdDocument.save();
+        }
         res.send(data);
       } else {
-        const body = { log: `${username} user tried to log in!`, ip: ip, date: new Date().toLocaleString("hu-HU", { timeZone: "Europe/Budapest" }) };
-        const createdDocument = new this.log({
-          ...body
-        });
-        createdDocument["_id"] = new mongoose.Types.ObjectId();
-        const savedDocument = await createdDocument.save();
+        if (logs[0] && !logs[0].log.includes(username as string)) {
+          const body = { log: `${username} user tried to log in!`, ip: ip, date: new Date().toLocaleString("hu-HU", { timeZone: "Europe/Budapest" }) };
+          const createdDocument = new this.log({
+            ...body
+          });
+          createdDocument["_id"] = new mongoose.Types.ObjectId();
+          const savedDocument = await createdDocument.save();
+        }
+
         res.status(404).send({ message: `Felhasználó a(z) ${username} névvel nem található!` });
       }
     } catch (error: any) {
