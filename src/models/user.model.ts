@@ -21,6 +21,11 @@ const userSchema = new Schema(
         },
         savedSubjects:{
             type: Array,
+        },
+        isDeleted: {
+            type: Boolean,
+            default: false,
+            readonly: true
         }
     },
     { versionKey: false },
