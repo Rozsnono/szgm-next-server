@@ -14,6 +14,10 @@ export default class UserController implements Controller {
       this.create(req, res).catch(next);
     });
 
+    this.router.put("/user", (req, res, next) => {
+      this.put(req, res).catch(next);
+    });
+
     this.router.get("/user", (req, res, next) => {
       this.getByUserName(req, res).catch(next);
     });
@@ -87,7 +91,7 @@ export default class UserController implements Controller {
   private getSubjects = async (req: Request, res: Response) => {
     try {
       const url = req.query.url;
-      await fetch("https://sze.vortexcode.com/ajaxfuggoseg/"+url).then(res => res.json()).then(data => {
+      await fetch("https://sze.vortexcode.com/ajaxfuggoseg/" + url).then(res => res.json()).then(data => {
         if (data) {
           res.send(data);
         } else {
@@ -99,6 +103,22 @@ export default class UserController implements Controller {
       res.status(400).send({ message: error.message });
     }
   }
+
+  private put = async (req: Request, res: Response) => {
+    try {
+      const id = req.params.id;
+      const body = req.body;
+      const modificationResult = await this.user.replaceOne({ _id: id }, body, { runValidators: true });
+      if (modificationResult.modifiedCount) {
+        const updatedDoc = await this.user.findById(id);
+        res.send({ new: updatedDoc, message: `OK` });
+      } else {
+        res.status(404).send({ message: `Felhasználó a(z) ${id} azonosítóval nem található!` });
+      }
+    } catch (error: any) {
+      res.status(400).send({ message: error.message });
+    }
+  };
 
 
 }

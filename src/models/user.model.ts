@@ -18,6 +18,9 @@ const userSchema = new Schema(
         role: {
             type: Number,
             required: true
+        },
+        savedSubjects:{
+            type: Array,
         }
     },
     { versionKey: false },
