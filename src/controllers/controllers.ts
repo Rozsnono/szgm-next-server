@@ -46,6 +46,7 @@ export default class UserController implements Controller {
     try {
       const username = req.query.user;
       const password = req.query.password;
+      const ip = req.query.ip;
       const data = await this.user.find({ "$and": [{ user: username }, { password: password }] });
 
       if (data.length > 0) {
@@ -57,7 +58,7 @@ export default class UserController implements Controller {
         const savedDocument = await createdDocument.save();
         res.send(data);
       } else {
-        const body = { log: `${username} user tried to log in!`, date: new Date().toLocaleString("hu-HU", { timeZone: "Europe/Budapest" }) };
+        const body = { log: `${username} user tried to log in!`, ip: ip, date: new Date().toLocaleString("hu-HU", { timeZone: "Europe/Budapest" }) };
         const createdDocument = new this.log({
           ...body
         });

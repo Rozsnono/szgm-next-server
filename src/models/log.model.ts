@@ -15,6 +15,10 @@ const logSchema = new Schema(
             type: String,
             required:true
         },
+        ip: {
+            type: String,
+            required: true
+        }
     },
     { versionKey: false },
 );
