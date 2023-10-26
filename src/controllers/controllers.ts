@@ -154,7 +154,7 @@ export default class UserController implements Controller {
       const ban = req.params.ban == "true" ? true : false;
       const updatedDoc = await this.user.findById(id);
       const body = updatedDoc;
-      if (body && body.role != 3) {
+      if (body && body.role != 1) {
         body.isDeleted = ban;
         const modificationResult = await this.user.replaceOne({ _id: id }, body, { runValidators: true });
         if (modificationResult.modifiedCount) {
