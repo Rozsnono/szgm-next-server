@@ -23,7 +23,7 @@ export default class UserController implements Controller {
     });
 
     this.router.get("/user", (req, res, next) => {
-      this.getByUserName(req, res).catch(next);
+      this.login(req, res).catch(next);
     });
 
     this.router.get("/users", (req, res, next) => {
@@ -54,7 +54,7 @@ export default class UserController implements Controller {
     }
   };
 
-  private getByUserName = async (req: Request, res: Response) => {
+  private login = async (req: Request, res: Response) => {
     try {
       const username = req.query.user;
       const password = req.query.password;
@@ -62,7 +62,7 @@ export default class UserController implements Controller {
       const data = await this.user.find({ "$and": [{ user: username }, { password: password }] });
 
       const logs = await this.log.find().sort({ date: -1 });
-      if (data.length > 0) {
+      if (data.length > 0 && data[0].isDeleted == false) {
         if (logs[0] && !logs[0].log.includes(username as string)) {
           const body = { log: `${username} user loged in!`, ip: ip, date: new Date().toLocaleString("hu-HU", { timeZone: "Europe/Budapest" }) };
           const createdDocument = new this.log({
