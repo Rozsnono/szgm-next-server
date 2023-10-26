@@ -50,7 +50,7 @@ export default class UserController implements Controller {
       const data = await this.user.find({ "$and": [{ user: username }, { password: password }] });
 
       if (data.length > 0) {
-        const body = { log: `${username} user loged in!`, date: new Date().toLocaleString("hu-HU", { timeZone: "Europe/Budapest" }) };
+        const body = { log: `${username} user loged in!`, ip: ip, date: new Date().toLocaleString("hu-HU", { timeZone: "Europe/Budapest" }) };
         const createdDocument = new this.log({
           ...body
         });
