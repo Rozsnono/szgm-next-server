@@ -37,6 +37,12 @@ export default class UserController implements Controller {
     this.router.get("/subjects", (req, res, next) => {
       this.getSubjects(req, res).catch(next);
     });
+
+    this.router.get("/subjectData", (req, res, next) => {
+      this.getSubjectsData(req, res).catch(next);
+    });
+
+
   }
 
 
@@ -116,10 +122,27 @@ export default class UserController implements Controller {
     }
   }
 
+  
+
   private getSubjects = async (req: Request, res: Response) => {
     try {
       const url = req.query.url;
       await fetch("https://sze.vortexcode.com/ajaxfuggoseg/" + url).then(res => res.json()).then(data => {
+        if (data) {
+          res.send(data);
+        } else {
+          res.status(404).send({ message: `Nincs data!` });
+        }
+      });
+
+    } catch (error: any) {
+      res.status(400).send({ message: error.message });
+    }
+  }
+
+  private getSubjectsData = async (req: Request, res: Response) => {
+    try {
+      await fetch("https://sze.vortexcode.com/list.json").then(res => res.json()).then(data => {
         if (data) {
           res.send(data);
         } else {
