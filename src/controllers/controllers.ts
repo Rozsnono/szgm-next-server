@@ -69,7 +69,7 @@ export default class UserController implements Controller {
 
       const logs = await this.log.find().sort({ date: -1 });
       if (data.length > 0 && data[0].isDeleted == false) {
-        if (logs[0] && !logs[0].log.includes(username as string)) {
+        if (logs[0] && !logs[0].log.includes(username as string) && !logs[0].log.includes(ip as string)) {
           const body = { log: `${username} user loged in!`, ip: ip, date: new Date().toLocaleString("hu-HU", { timeZone: "Europe/Budapest" }) };
           const createdDocument = new this.log({
             ...body
@@ -79,7 +79,7 @@ export default class UserController implements Controller {
         }
         res.send(data);
       } else {
-        if (logs[0] && !logs[0].log.includes(username as string)) {
+        if (logs[0] && !logs[0].log.includes(username as string) && !logs[0].log.includes(ip as string)) {
           const body = { log: `${username} user tried to log in!`, ip: ip, date: new Date().toLocaleString("hu-HU", { timeZone: "Europe/Budapest" }) };
           const createdDocument = new this.log({
             ...body
@@ -122,7 +122,7 @@ export default class UserController implements Controller {
     }
   }
 
-  
+
 
   private getSubjects = async (req: Request, res: Response) => {
     try {
