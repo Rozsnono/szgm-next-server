@@ -22,6 +22,9 @@ const userSchema = new Schema(
         savedSubjects:{
             type: Array,
         },
+        planedSubjects: {
+            type: Array,
+        },
         savedTematiks: {
             type: Object,
         },
