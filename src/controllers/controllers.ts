@@ -3,11 +3,13 @@ import Controller from "../interfaces/controller_interface";
 import userModel from "../models/user.model"
 import mongoose from "mongoose";
 import logModel from "../models/log.model";
+import MessageModel from "../models/message.model";
 
 export default class UserController implements Controller {
   public router = Router();
   public user = userModel;
   public log = logModel;
+  public message = MessageModel;
 
   constructor() {
     this.router.post("/user", (req, res, next) => {
@@ -40,6 +42,18 @@ export default class UserController implements Controller {
 
     this.router.get("/subjectData", (req, res, next) => {
       this.getSubjectsData(req, res).catch(next);
+    });
+
+    this.router.post("/message", (req, res, next) => {
+      this.createMessage(req, res).catch(next);
+    });
+
+    this.router.get("/messages", (req, res, next) => {
+      this.getMessages(req, res).catch(next);
+    });
+
+    this.router.get("/message", (req, res, next) => {
+      this.getMessagesByUser(req, res).catch(next);
     });
 
 
@@ -193,5 +207,47 @@ export default class UserController implements Controller {
     }
   };
 
+
+
+  private createMessage = async (req: Request, res: Response) => {
+    try {
+      const body = req.body;
+      const createdDocument = new this.message({
+        ...body
+      });
+      createdDocument["_id"] = new mongoose.Types.ObjectId();
+      const savedDocument = await createdDocument.save();
+      res.send({ message: "OK" });
+    } catch (error: any | Error) {
+      res.status(400).send({ message: error.message });
+    }
+  };
+
+  private getMessages = async (req: Request, res: Response) => {
+    try {
+      const data = await this.message.find({ participants: [req.query.user_id] });
+      if (data) {
+        res.send(data);
+      } else {
+        res.status(404).send({ message: `Nincs üzenet!` });
+      }
+    } catch (error: any) {
+      res.status(400).send({ message: error.message });
+    }
+  }
+
+  private getMessagesByUser = async (req: Request, res: Response) => {
+    try {
+      const data = await this.message.findById(req.query.id);
+      if (data) {
+        res.send(data);
+      } else {
+        res.status(404).send({ message: `Nincs üzenet!` });
+      }
+    } catch (error: any) {
+      res.status(400).send({ message: error.message });
+
+    }
+  }
 
 }
