@@ -211,6 +211,7 @@ export default class UserController implements Controller {
 
   private createMessage = async (req: Request, res: Response) => {
     try {
+      console.log(req.body)
       const body = req.body;
       const createdDocument = new this.message({
         ...body
