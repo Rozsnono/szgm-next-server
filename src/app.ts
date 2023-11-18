@@ -22,7 +22,7 @@ export default class App {
         this.app.use(cors());
 
         const server = http.createServer(this.app);
-        const wss = new WebSocketServer({ port: 8080 });
+        const wss = new WebSocketServer({ port: Number(process.env.PORT || 8000) });
 
         wss.on('connection', (ws) => {
             console.log("Connected");
