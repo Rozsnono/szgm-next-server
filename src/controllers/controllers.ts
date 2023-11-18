@@ -56,6 +56,10 @@ export default class UserController implements Controller {
       this.getMessagesByUser(req, res).catch(next);
     });
 
+    this.router.put("/message/:id", (req, res, next) => {
+      this.putMessage(req, res).catch(next);
+    });
+
 
   }
 
@@ -244,6 +248,27 @@ export default class UserController implements Controller {
         res.send(data);
       } else {
         res.status(404).send({ message: `Nincs üzenet!` });
+      }
+    } catch (error: any) {
+      res.status(400).send({ message: error.message });
+
+    }
+  }
+
+  private putMessage = async (req: Request, res: Response) => {
+    try {
+      try {
+        const id = req.params.id;
+        const body = req.body;
+        const modificationResult = await this.message.replaceOne({ _id: id }, body, { runValidators: true });
+        if (modificationResult.modifiedCount) {
+          const updatedDoc = await this.message.findById(id);
+          res.send({ message: `OK` });
+        } else {
+          res.status(404).send({ message: `Felhasználó a(z) ${id} azonosítóval nem található!` });
+        }
+      } catch (error: any) {
+        res.status(400).send({ message: error.message });
       }
     } catch (error: any) {
       res.status(400).send({ message: error.message });

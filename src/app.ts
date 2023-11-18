@@ -4,9 +4,9 @@ import IController from "./interfaces/controller_interface";
 import fs from "fs";
 import path from 'path';
 import cors from "cors";
-import { Server } from 'socket.io';
 import http from 'http';
 import MessageModel from "./models/message.model";
+import WebSocket from 'ws';
 
 
 
@@ -20,16 +20,17 @@ export default class App {
         this.app = express();
         this.app.use(express.json());
         this.app.use(cors());
+
         const server = http.createServer(this.app);
-        const io = new Server(server, {
-            cors: {
-                origin: '*',
-            },
-        });
+        const wss = new WebSocket.Server({ server });
 
         const watching = this.message.watch();
         watching.on("change", (change: any) => {
-            io.emit("dataChange", change);
+            wss.clients.forEach(client => {
+                if (client.readyState === WebSocket.OPEN) {
+                  client.send(JSON.stringify(change));
+                }
+              });
         });
 
         this.connectToTheDatabase().then(() => {
@@ -45,15 +46,6 @@ export default class App {
 
         controllers.forEach(controller => {
             this.app.use("/api", controller.router);
-        })
-
-        io.on('connection', (socket) => {
-            console.log('A user connected');
-
-            // Handle disconnection
-            socket.on('disconnect', () => {
-                console.log('User disconnected');
-            });
         });
     }
 

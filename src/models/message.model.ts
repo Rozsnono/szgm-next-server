@@ -12,7 +12,7 @@ const messageSchema = new Schema(
             required: true
         },
         messages: {
-            type: Array<{by: Schema.Types.ObjectId, message: string}>,
+            type: Array<{by: Schema.Types.ObjectId, message: string, date: Date}>,
             required:true
         }
     },
