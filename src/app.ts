@@ -39,10 +39,10 @@ export default class App {
 
         this.connectToTheDatabase().then(() => {
             const port: number | any = process.env.PORT || 8000;
-            server.listen(port, "0.0.0.0", function () {
-                console.log('Server is running on port ' + port);
+            // server.listen(port, "0.0.0.0", function () {
+            //     console.log('Server is running on port ' + port);
 
-            });
+            // });
 
 
         });
