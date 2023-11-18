@@ -260,9 +260,14 @@ export default class UserController implements Controller {
       try {
         const id = req.params.id;
         const body = req.body;
-        const modificationResult = await this.message.replaceOne({ _id: id }, body, { runValidators: true });
+        const data = await this.message.findById(id);
+        let newBody = {};
+        if(data){
+          data.messages.push({ by: body.by, message: body.message, date: new Date().toLocaleString("hu-HU", { timeZone: "Europe/Budapest" }) });
+          newBody = { messages: data.messages, participants: data.participants};
+        }
+        const modificationResult = await this.message.replaceOne({ _id: id }, newBody, { runValidators: true });
         if (modificationResult.modifiedCount) {
-          const updatedDoc = await this.message.findById(id);
           res.send({ message: `OK` });
         } else {
           res.status(404).send({ message: `Felhasználó a(z) ${id} azonosítóval nem található!` });

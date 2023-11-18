@@ -8,11 +8,11 @@ const messageSchema = new Schema(
             readonly: true
         },
         participants: {
-            type: Array<{id: Schema.Types.ObjectId, name: string}>,
+            type: Array,
             required: true
         },
         messages: {
-            type: Array<{by: Schema.Types.ObjectId, message: string, date: Date}>,
+            type: Array,
             required:true
         }
     },
