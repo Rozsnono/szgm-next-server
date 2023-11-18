@@ -6,7 +6,7 @@ import path from 'path';
 import cors from "cors";
 import http from 'http';
 import MessageModel from "./models/message.model";
-import WebSocket from 'ws';
+import { WebSocketServer } from 'ws';
 
 
 
@@ -22,7 +22,7 @@ export default class App {
         this.app.use(cors());
 
         const server = http.createServer(this.app);
-        const wss = new WebSocket.Server({ port: 8000 });
+        const wss = new WebSocketServer({ port: Number(process.env.PORT) });
 
         wss.on('connection', (ws) => {
             console.log("Connected");
@@ -50,7 +50,8 @@ export default class App {
 
 
 
-
+        // const interval = this.keepAlive(wss)
+        // wss.on("close", () => clearInterval(interval))
 
         controllers.forEach(controller => {
             this.app.use("/api", controller.router);
@@ -66,4 +67,15 @@ export default class App {
         }
 
     }
+
+    // private keepAlive = (wss: WebSocketServer) =>
+    //     setInterval(
+    //         () =>
+    //             wss.clients.forEach((ws: Socket) => {
+    //                 if (ws.isAlive === false) return ws.terminate()
+    //                 ws.isAlive = false
+    //                 ws.ping()
+    //             }),
+    //         30_000,
+    //     )
 }
