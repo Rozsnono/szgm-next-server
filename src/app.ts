@@ -22,7 +22,7 @@ export default class App {
         this.app.use(cors());
 
         const server = http.createServer(this.app);
-        const wss = new WebSocketServer({ port: Number(process.env.PORT || 8000) });
+        const wss = new WebSocketServer({ port: 8000 });
 
         wss.on('connection', (ws) => {
             console.log("Connected");
@@ -39,10 +39,10 @@ export default class App {
 
         this.connectToTheDatabase().then(() => {
             const port: number | any = process.env.PORT || 8000;
-            // server.listen(port, "0.0.0.0", function () {
-            //     console.log('Server is running on port ' + port);
+            server.listen(port, "0.0.0.0", function () {
+                console.log('Server is running on port ' + port);
 
-            // });
+            });
 
 
         });
