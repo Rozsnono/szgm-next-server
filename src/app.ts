@@ -22,7 +22,7 @@ export default class App {
         this.app.use(cors());
 
         const server = http.createServer(this.app);
-        const wss = new WebSocket.Server({ server });
+        const wss = new WebSocket.Server({ port: 8000 });
 
         wss.on('connection', (ws) => {
             console.log("Connected");
@@ -38,9 +38,13 @@ export default class App {
         });
 
         this.connectToTheDatabase().then(() => {
-            server.listen(8000, () => {
-                console.log('Server is running on port 8000');
+            const port: number | any = process.env.PORT || 8000;
+            server.listen(port, "0.0.0.0", function () {
+                console.log('Server is running on port ' + port);
+
             });
+
+
         });
         // this.app.use(express.json());
 
@@ -52,15 +56,6 @@ export default class App {
             this.app.use("/api", controller.router);
         });
     }
-
-
-
-    public listen(): void {
-        this.app.listen(8000, () => {
-            console.log("The application is available on port 8000!");
-        })
-    }
-
     private async connectToTheDatabase() {
         mongoose.set("strictQuery", true);
         try {
