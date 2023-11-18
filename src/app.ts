@@ -23,6 +23,7 @@ export default class App {
 
         const server = http.createServer(this.app);
         const wss = new WebSocketServer({ server });
+        
 
         wss.on('connection', (ws) => {
             console.log("Connected");
