@@ -56,6 +56,10 @@ export default class UserController implements Controller {
       this.getMessagesByUser(req, res).catch(next);
     });
 
+    this.router.get("/message/:id", (req, res, next) => {
+      this.getMessagesById(req, res).catch(next);
+    });
+
     this.router.put("/message/:id", (req, res, next) => {
       this.putMessage(req, res).catch(next);
     });
@@ -244,6 +248,21 @@ export default class UserController implements Controller {
   private getMessagesByUser = async (req: Request, res: Response) => {
     try {
       const data = await this.message.findById(req.query.id);
+      if (data) {
+        res.send(data);
+      } else {
+        res.status(404).send({ message: `Nincs üzenet!` });
+      }
+    } catch (error: any) {
+      res.status(400).send({ message: error.message });
+
+    }
+  }
+
+  private getMessagesById = async (req: Request, res: Response) => {
+    try {
+      const id = req.params.id;
+      const data = await this.message.findById(id);
       if (data) {
         res.send(data);
       } else {
