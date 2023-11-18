@@ -311,7 +311,8 @@ export default class UserController implements Controller {
         const data = await this.message.findById(id);
         let newBody = {};
         if (data) {
-          const index = data.messages.indexOf(data.messages.filter((message: any) => message._id == body.id)[0]);
+          const tmp = data.messages.filter((message: any) => message._id == body._id)[0];
+          const index = data.messages.indexOf(tmp);
           if (index != -1) {
             data.messages[index].reaction.push(body.reaction);
           } else {
