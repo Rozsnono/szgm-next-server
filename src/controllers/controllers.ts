@@ -52,7 +52,7 @@ export default class UserController implements Controller {
       this.getMessages(req, res).catch(next);
     });
 
-    this.router.get("/message", (req, res, next) => {
+    this.router.get("/message/:user", (req, res, next) => {
       this.getMessagesByUser(req, res).catch(next);
     });
 
@@ -62,6 +62,10 @@ export default class UserController implements Controller {
 
     this.router.put("/message/:id", (req, res, next) => {
       this.putMessage(req, res).catch(next);
+    });
+
+    this.router.put("/message/:id", (req, res, next) => {
+      this.reactionMessage(req, res).catch(next);
     });
 
 
@@ -247,6 +251,7 @@ export default class UserController implements Controller {
 
   private getMessagesByUser = async (req: Request, res: Response) => {
     try {
+      const id = req.params.user;
       const data = await this.message.findById(req.query.id);
       if (data) {
         res.send(data);
@@ -281,9 +286,40 @@ export default class UserController implements Controller {
         const body = req.body;
         const data = await this.message.findById(id);
         let newBody = {};
-        if(data){
-          data.messages.push({ by: body.by, message: body.message, date: new Date().toLocaleString("hu-HU", { timeZone: "Europe/Budapest" }) });
-          newBody = { messages: data.messages, participants: data.participants};
+        if (data) {
+          data.messages.push({ _id: new mongoose.Types.ObjectId(), by: body.by, message: body.message, date: new Date().toLocaleString("hu-HU", { timeZone: "Europe/Budapest" }), reaction: [] });
+          newBody = { messages: data.messages, participants: data.participants };
+        }
+        const modificationResult = await this.message.replaceOne({ _id: id }, newBody, { runValidators: true });
+        if (modificationResult.modifiedCount) {
+          res.send({ message: `OK` });
+        } else {
+          res.status(404).send({ message: `Felhasználó a(z) ${id} azonosítóval nem található!` });
+        }
+      } catch (error: any) {
+        res.status(400).send({ message: error.message });
+      }
+    } catch (error: any) {
+      res.status(400).send({ message: error.message });
+
+    }
+  }
+
+  private reactionMessage = async (req: Request, res: Response) => {
+    try {
+      try {
+        const id = req.params.id;
+        const body = req.body;
+        const data = await this.message.findById(id);
+        let newBody = {};
+        if (data) {
+          const index = data.messages.indexOf(data.messages.filter((message: any) => message._id == body.id)[0]);
+          if (index != -1) {
+            data.messages[index].reaction.push(body.reaction);
+          } else {
+            res.status(404).send({ message: `Felhasználó a(z) ${id} azonosítóval nem található!` });
+          }
+          newBody = { messages: data.messages, participants: data.participants };
         }
         const modificationResult = await this.message.replaceOne({ _id: id }, newBody, { runValidators: true });
         if (modificationResult.modifiedCount) {
