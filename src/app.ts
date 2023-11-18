@@ -24,13 +24,17 @@ export default class App {
         const server = http.createServer(this.app);
         const wss = new WebSocket.Server({ server });
 
+        wss.on('connection', (ws) => {
+            console.log("Connected");
+        });
+
         const watching = this.message.watch();
         watching.on("change", (change: any) => {
             wss.clients.forEach(client => {
                 if (client.readyState === WebSocket.OPEN) {
-                  client.send(JSON.stringify(change));
+                    client.send(JSON.stringify(change));
                 }
-              });
+            });
         });
 
         this.connectToTheDatabase().then(() => {
