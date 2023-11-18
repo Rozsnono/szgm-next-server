@@ -60,7 +60,7 @@ export default class UserController implements Controller {
       this.putMessage(req, res).catch(next);
     });
 
-    this.router.put("/message/:id", (req, res, next) => {
+    this.router.put("/message/reaction/:id", (req, res, next) => {
       this.reactionMessage(req, res).catch(next);
     });
 
