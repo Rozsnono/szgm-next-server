@@ -234,9 +234,9 @@ export default class UserController implements Controller {
 
   private getMessages = async (req: Request, res: Response) => {
     try {
-      const data = await this.message.find({ participants: [req.query.user_id] });
+      const data = await this.message.find();
       if (data) {
-        res.send(data);
+        res.send(data.filter((message: any) => message.participants.filter((participant: any) => participant._id == req.query.user).length > 0));
       } else {
         res.status(404).send({ message: `Nincs üzenet!` });
       }
@@ -316,7 +316,7 @@ export default class UserController implements Controller {
           if (index != -1) {
             data.messages[index].reaction.push(body.reaction);
           } else {
-            res.status(404).send({ message: `Felhasználó a(z) ${id} azonosítóval nem található!` });
+            res.status(404).send({ message: `NINCS ILYEN ${body._id}` });
           }
           newBody = { messages: data.messages, participants: data.participants };
         }
