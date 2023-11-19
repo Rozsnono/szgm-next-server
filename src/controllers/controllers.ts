@@ -226,7 +226,7 @@ export default class UserController implements Controller {
       });
       createdDocument["_id"] = new mongoose.Types.ObjectId();
       const savedDocument = await createdDocument.save();
-      res.send({ message: "OK" });
+      res.send({ new: savedDocument, message: "OK" });
     } catch (error: any | Error) {
       res.status(400).send({ message: error.message });
     }
