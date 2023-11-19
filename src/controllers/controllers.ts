@@ -235,7 +235,7 @@ export default class UserController implements Controller {
   private getMessages = async (req: Request, res: Response) => {
     try {
       const data = await this.message.find();
-      const newData = data.filter((message: any) => message.participants.filter((participant: any) => participant._id == req.query.user).length > 0)
+      const newData = data.filter((message: any) => message.participants.filter((participant: any) => participant._id == req.query.user).length > 0).map((message: any) => {return {_id: message._id, participants: message.participants, lastMessage: message.messages[message.messages.length - 1]}});
       if (newData) {
         res.send(newData);
       } else {
