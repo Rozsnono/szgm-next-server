@@ -316,7 +316,7 @@ export default class UserController implements Controller {
           const index = data.messages.indexOf(tmp);
           if (index != -1) {
             data.messages[index].reaction.unshift(body.reaction);
-            data.messages[index].reaction.slice(0, 3);
+            data.messages[index].reaction = data.messages[index].reaction.slice(0, 3);
           } else {
             res.status(404).send({ message: `NINCS ILYEN ${body._id}` });
           }
