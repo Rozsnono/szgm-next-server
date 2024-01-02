@@ -134,7 +134,7 @@ export default class UserController implements Controller {
   private aiMessage = async (req: Request, res: Response) => {
     const message = req.body.message;
     const id = req.body.id;
-    if (message && id) {
+    if (message) {
       const openai = new OpenAI({ apiKey: "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" });
       const completion = await openai.chat.completions.create({
         messages: [{ role: "system", content: message }],
