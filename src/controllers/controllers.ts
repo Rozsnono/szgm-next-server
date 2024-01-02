@@ -111,7 +111,7 @@ export default class UserController implements Controller {
           user_id: req.body.user_id,
           messages: tmp
         }
-        const modificationResult = await this.ai.replaceOne({ _id: id }, body, { runValidators: true });
+        const modificationResult = await this.ai.replaceOne({ _id: data[0]._id }, body, { runValidators: true });
 
         if (modificationResult.modifiedCount) {
           res.send({ message: completion.choices[0].message.content });
