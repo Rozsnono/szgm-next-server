@@ -106,7 +106,6 @@ export default class UserController implements Controller {
       if (data && data.length > 0) {
         let tmp = data[0].messages;
         tmp.push({ role: "user", message: message });
-        
         tmp.push({ role: "ai", message: completion.choices[0].message.content });
 
         const body = {
