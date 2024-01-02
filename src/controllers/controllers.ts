@@ -4,6 +4,8 @@ import userModel from "../models/user.model"
 import mongoose from "mongoose";
 import logModel from "../models/log.model";
 import MessageModel from "../models/message.model";
+import OpenAI from "openai";
+
 
 export default class UserController implements Controller {
   public router = Router();
@@ -64,7 +66,25 @@ export default class UserController implements Controller {
       this.reactionMessage(req, res).catch(next);
     });
 
+    this.router.post("/ai", (req, res, next) => {
+      this.aiMessage(req, res).catch(next);
+    });
 
+
+  }
+
+  private aiMessage = async (req: Request, res: Response) => {
+    const message = req.body.message;
+    if (message) {
+      const openai = new OpenAI({ apiKey: "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" });
+      const completion = await openai.chat.completions.create({
+        messages: [{ role: "system", content: message }],
+        model: "gpt-3.5-turbo",
+      });
+
+      res.send({ message: completion.choices[0].message.content });
+    }
+    res.status(400).send({ message: "Nincs üzenet!" });
   }
 
 
@@ -235,7 +255,7 @@ export default class UserController implements Controller {
   private getMessages = async (req: Request, res: Response) => {
     try {
       const data = await this.message.find();
-      const newData = data.filter((message: any) => message.participants.filter((participant: any) => participant._id == req.query.user).length > 0).map((message: any) => {return {_id: message._id, participants: message.participants, lastMessage: message.messages[message.messages.length - 1]}});
+      const newData = data.filter((message: any) => message.participants.filter((participant: any) => participant._id == req.query.user).length > 0).map((message: any) => { return { _id: message._id, participants: message.participants, lastMessage: message.messages[message.messages.length - 1] } });
       if (newData) {
         res.send(newData);
       } else {
