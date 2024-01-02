@@ -85,7 +85,7 @@ export default class UserController implements Controller {
         model: "gpt-3.5-turbo",
       });
       const data = await this.ai.find({ _id: id });
-      if (data) {
+      if (data && data.length > 0) {
         let tmp = data[0].messages;
         tmp.push({ role: "user", message: message });
         tmp.push({ role: "ai", message: completion.choices[0].message.content });
