@@ -142,7 +142,7 @@ export default class UserController implements Controller {
       });
       const data = await this.ai.find({ user_id: id });
       if (data && data.length > 0) {
-
+        req.body.messages.push({ role: "ai", message: completion.choices[0].message.content });
         const body = {
           user_id: req.body.user_id,
           messages: req.body.messages,
@@ -159,7 +159,7 @@ export default class UserController implements Controller {
         tmp.push({ role: "ai", message: completion.choices[0].message.content });
         const createdDocument = new this.ai({
           user_id: req.body.user_id,
-          messages: tmp,
+          messages: req.body.messages,
           date: new Date().toLocaleString("hu-HU", { timeZone: "Europe/Budapest" })
         });
         createdDocument["_id"] = new mongoose.Types.ObjectId();
