@@ -137,7 +137,7 @@ export default class UserController implements Controller {
     if (message && id) {
       const openai = new OpenAI({ apiKey: "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" });
       const completion = await openai.chat.completions.create({
-        messages: [{ role: "system", content: message[message.length - 1].message }],
+        messages: [{ role: "system", content: message }],
         model: "gpt-3.5-turbo",
       });
       const data = await this.ai.findById(id);
