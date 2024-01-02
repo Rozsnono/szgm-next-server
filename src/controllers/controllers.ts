@@ -72,8 +72,12 @@ export default class UserController implements Controller {
       this.aiMessage(req, res).catch(next);
     });
 
-    this.router.get("/ai", (req, res, next) => {
+    this.router.get("/ai-all", (req, res, next) => {
       this.getAiMessages(req, res).catch(next);
+    });
+
+    this.router.get("/ai", (req, res, next) => {
+      this.getAiMessageById(req, res).catch(next);
     });
 
 
@@ -84,6 +88,20 @@ export default class UserController implements Controller {
       const data = await this.ai.find({ user_id: req.query.user_id});
 
       if (data.length > 0) {
+        res.send(data);
+      } else {
+        res.status(404).send({ message: `Felhasználó nem található!` });
+      }
+    } catch (error: any) {
+      res.status(400).send({ message: error.message });
+    }
+  }
+
+  private getAiMessageById = async (req: Request, res: Response) => {
+    try {
+      const data = await this.ai.findById(req.query.id);
+
+      if (data) {
         res.send(data);
       } else {
         res.status(404).send({ message: `Felhasználó nem található!` });
