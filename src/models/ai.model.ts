@@ -9,7 +9,6 @@ const aiSchema = new Schema(
         },
         date: {
             type: Date,
-            required: true,
             readonly: true
         },
         user_id: {
