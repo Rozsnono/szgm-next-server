@@ -148,7 +148,8 @@ export default class UserController implements Controller {
 
         const body = {
           user_id: req.body.user_id,
-          messages: tmp
+          messages: tmp,
+          date: new Date().toLocaleString("hu-HU", { timeZone: "Europe/Budapest" })
         }
         const modificationResult = await this.ai.replaceOne({ _id: data[0]._id }, body, { runValidators: true });
 
