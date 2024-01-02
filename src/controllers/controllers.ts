@@ -5,6 +5,7 @@ import mongoose from "mongoose";
 import logModel from "../models/log.model";
 import MessageModel from "../models/message.model";
 import OpenAI from "openai";
+import AImodel from "../models/ai.model";
 
 
 export default class UserController implements Controller {
@@ -12,6 +13,7 @@ export default class UserController implements Controller {
   public user = userModel;
   public log = logModel;
   public message = MessageModel;
+  public ai = AImodel;
 
   constructor() {
     this.router.post("/user", (req, res, next) => {
@@ -75,14 +77,41 @@ export default class UserController implements Controller {
 
   private aiMessage = async (req: Request, res: Response) => {
     const message = req.body.message;
-    if (message) {
+    const id = req.body.user_id;
+    if (message && id) {
       const openai = new OpenAI({ apiKey: "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" });
       const completion = await openai.chat.completions.create({
         messages: [{ role: "system", content: message }],
         model: "gpt-3.5-turbo",
       });
+      const data = await this.ai.find({ _id: id });
+      if (data) {
+        let tmp = data[0].messages;
+        tmp.push({ role: "user", message: message });
+        tmp.push({ role: "ai", message: completion.choices[0].message.content });
+        const body = {
+          user_id: req.body.user_id,
+          messages: tmp
+        }
+        const modificationResult = await this.user.replaceOne({ _id: id }, body, { runValidators: true });
 
-      res.send({ message: completion.choices[0].message.content });
+        if (modificationResult.modifiedCount) {
+          res.send({ message: completion.choices[0].message.content });
+        }
+      } else {
+        let tmp = [];
+        tmp.push({ role: "user", message: message });
+        tmp.push({ role: "ai", message: completion.choices[0].message.content });
+        const createdDocument = new this.ai({
+          user_id: req.body.user_id,
+          messages: tmp
+        });
+        createdDocument["_id"] = new mongoose.Types.ObjectId();
+        const savedDocument = await createdDocument.save();
+
+        res.send({ message: completion.choices[0].message.content });
+
+      }
     }
     res.status(400).send({ message: "Nincs üzenet!" });
   }
