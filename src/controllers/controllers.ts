@@ -88,7 +88,7 @@ export default class UserController implements Controller {
 
   private getAiMessages = async (req: Request, res: Response) => {
     try {
-      const data = await this.ai.find({ user_id: req.query.user_id });
+      const data = await this.ai.find({ user_id: req.query.user_id }).sort({ date: -1 });
 
       if (data.length > 0) {
         res.send(data);
