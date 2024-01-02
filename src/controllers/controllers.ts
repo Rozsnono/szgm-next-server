@@ -80,12 +80,15 @@ export default class UserController implements Controller {
       this.getAiMessageById(req, res).catch(next);
     });
 
+    this.router.post("/ai-new", (req, res, next) => {
+      this.newAiMessage(req, res).catch(next);
+    });
 
   }
 
   private getAiMessages = async (req: Request, res: Response) => {
     try {
-      const data = await this.ai.find({ user_id: req.query.user_id});
+      const data = await this.ai.find({ user_id: req.query.user_id });
 
       if (data.length > 0) {
         res.send(data);
@@ -96,6 +99,23 @@ export default class UserController implements Controller {
       res.status(400).send({ message: error.message });
     }
   }
+
+  private newAiMessage = async (req: Request, res: Response) => {
+    try {
+      const createdDocument = new this.ai({
+        user_id: req.body.user_id,
+        messages: [],
+        date: new Date().toLocaleString("hu-HU", { timeZone: "Europe/Budapest" })
+      });
+      createdDocument["_id"] = new mongoose.Types.ObjectId();
+      const savedDocument = await createdDocument.save();
+      res.status(200).send({ message: "OK" });
+    } catch (error: any | Error) {
+      res.status(400).send({ message: error.message });
+    }
+  };
+
+
 
   private getAiMessageById = async (req: Request, res: Response) => {
     try {
@@ -141,7 +161,8 @@ export default class UserController implements Controller {
         tmp.push({ role: "ai", message: completion.choices[0].message.content });
         const createdDocument = new this.ai({
           user_id: req.body.user_id,
-          messages: tmp
+          messages: tmp,
+          date: new Date().toLocaleString("hu-HU", { timeZone: "Europe/Budapest" })
         });
         createdDocument["_id"] = new mongoose.Types.ObjectId();
         const savedDocument = await createdDocument.save();

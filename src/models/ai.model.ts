@@ -7,6 +7,11 @@ const aiSchema = new Schema(
             type: Schema.Types.ObjectId,
             readonly: true
         },
+        date: {
+            type: Date,
+            required: true,
+            readonly: true
+        },
         user_id: {
             type: String,
             required: true
