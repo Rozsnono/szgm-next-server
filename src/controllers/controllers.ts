@@ -102,7 +102,7 @@ export default class UserController implements Controller {
         messages: [{ role: "system", content: message }],
         model: "gpt-3.5-turbo",
       });
-      const data = await this.ai.find({ _id: id });
+      const data = await this.ai.find({ user_id: id });
       if (data && data.length > 0) {
         let tmp = data[0].messages;
         tmp.push({ role: "user", message: message });
