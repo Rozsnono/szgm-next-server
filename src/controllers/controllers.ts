@@ -133,33 +133,31 @@ export default class UserController implements Controller {
 
   private aiMessage = async (req: Request, res: Response) => {
     const message = req.body.message;
-    const id = req.body.user_id;
+    const id = req.body.id;
     if (message && id) {
       const openai = new OpenAI({ apiKey: "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" });
       const completion = await openai.chat.completions.create({
-        messages: [{ role: "system", content: message }],
+        messages: [{ role: "system", content: message[message.length - 1].message }],
         model: "gpt-3.5-turbo",
       });
-      const data = await this.ai.find({ user_id: id });
-      if (data && data.length > 0) {
-        req.body.messages.push({ role: "ai", message: completion.choices[0].message.content });
+      const data = await this.ai.findById(id);
+      if (data) {
+        data.messages.push({ role: "user", message: message });
+        data.messages.push({ role: "ai", message: completion.choices[0].message.content });
         const body = {
           user_id: req.body.user_id,
-          messages: req.body.messages,
+          messages: data.messages,
           date: new Date().toLocaleString("hu-HU", { timeZone: "Europe/Budapest" })
         }
-        const modificationResult = await this.ai.replaceOne({ _id: req.body.id }, body, { runValidators: true });
+        const modificationResult = await this.ai.replaceOne({ _id: id }, body, { runValidators: true });
 
         if (modificationResult.modifiedCount) {
           res.send({ message: completion.choices[0].message.content });
         }
       } else {
-        let tmp = [];
-        tmp.push({ role: "user", message: message });
-        tmp.push({ role: "ai", message: completion.choices[0].message.content });
         const createdDocument = new this.ai({
           user_id: req.body.user_id,
-          messages: req.body.messages,
+          messages: [{ role: "user", message: message }, { role: "ai", message: completion.choices[0].message.content }],
           date: new Date().toLocaleString("hu-HU", { timeZone: "Europe/Budapest" })
         });
         createdDocument["_id"] = new mongoose.Types.ObjectId();
