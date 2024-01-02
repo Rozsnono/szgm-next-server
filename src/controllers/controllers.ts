@@ -72,7 +72,25 @@ export default class UserController implements Controller {
       this.aiMessage(req, res).catch(next);
     });
 
+    this.router.get("/ai", (req, res, next) => {
+      this.getAiMessages(req, res).catch(next);
+    });
 
+
+  }
+
+  private getAiMessages = async (req: Request, res: Response) => {
+    try {
+      const data = await this.ai.find({ user_id: req.query.user_id});
+
+      if (data.length > 0) {
+        res.send(data);
+      } else {
+        res.status(404).send({ message: `Felhasználó nem található!` });
+      }
+    } catch (error: any) {
+      res.status(400).send({ message: error.message });
+    }
   }
 
   private aiMessage = async (req: Request, res: Response) => {
