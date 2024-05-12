@@ -6,7 +6,6 @@ import path from 'path';
 import cors from "cors";
 import http from 'http';
 import MessageModel from "./models/message.model";
-import { WebSocketServer } from 'ws';
 
 
 
@@ -22,21 +21,7 @@ export default class App {
         this.app.use(cors());
 
         const server = http.createServer(this.app);
-        const wss = new WebSocketServer({ server });
         
-
-        wss.on('connection', (ws) => {
-            console.log("Connected");
-        });
-
-        const watching = this.message.watch();
-        watching.on("change", (change: any) => {
-            wss.clients.forEach(client => {
-                if (client.readyState === WebSocket.OPEN) {
-                    client.send(JSON.stringify(change));
-                }
-            });
-        });
 
         this.connectToTheDatabase().then(() => {
             const port: number | any = process.env.PORT || 8000;
