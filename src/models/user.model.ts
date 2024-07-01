@@ -28,6 +28,9 @@ const userSchema = new Schema(
         savedTematiks: {
             type: Object,
         },
+        savedPlannedSubjects: {
+            type: Array,
+        },
         isDeleted: {
             type: Boolean,
             default: false,

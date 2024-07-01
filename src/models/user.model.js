@@ -27,6 +27,9 @@ const userSchema = new mongoose_1.Schema({
     savedTematiks: {
         type: Object,
     },
+    savedPlannedSubjects: {
+        type: Array,
+    },
     isDeleted: {
         type: Boolean,
         default: false,
