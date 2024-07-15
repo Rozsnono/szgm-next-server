@@ -178,7 +178,7 @@ class UserController {
         this.getSubjects = (req, res) => __awaiter(this, void 0, void 0, function* () {
             try {
                 const url = req.query.url;
-                yield fetch("https://sze.vortexcode.com/ajaxfuggoseg/" + url).then(res => res.json()).then(data => {
+                yield fetch("https://ttr.sze.hu/api/getSubjects/", { method: 'POST', body: req.body }).then(res => res.json()).then(data => {
                     if (data) {
                         res.send(data);
                     }
