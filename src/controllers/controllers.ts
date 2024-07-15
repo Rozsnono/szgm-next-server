@@ -252,7 +252,7 @@ export default class UserController implements Controller {
   private getSubjects = async (req: Request, res: Response) => {
     try {
       const url = req.query.url;
-      await fetch("https://sze.vortexcode.com/ajaxfuggoseg/" + url).then(res => res.json()).then(data => {
+      await fetch("https://ttr.sze.hu/api/getSubjects/", {method: 'POST', body: req.body}).then(res => res.json()).then(data => {
         if (data) {
           res.send(data);
         } else {
