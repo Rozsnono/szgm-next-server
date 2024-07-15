@@ -387,7 +387,7 @@ class UserController {
         this.router.get("/logs", (req, res, next) => {
             this.getAllLogs(req, res).catch(next);
         });
-        this.router.get("/subjects", (req, res, next) => {
+        this.router.post("/subjects", (req, res, next) => {
             this.getSubjects(req, res).catch(next);
         });
         this.router.get("/subjectData", (req, res, next) => {
