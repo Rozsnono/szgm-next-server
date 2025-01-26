@@ -6,35 +6,35 @@ export default class NeptunController implements Controller {
   public router = Router();
 
   constructor() {
-    this.router.post("/login", (req, res, next) => {
+    this.router.post("/neptun/login", (req, res, next) => {
       this.logIn(req, res).catch(next);
     });
 
-    this.router.get("/terms", (req, res, next) => {
+    this.router.get("/neptun/terms", (req, res, next) => {
       this.getTerms(req, res).catch(next);
     });
 
-    this.router.get("/subjectTypes", (req, res, next) => {
+    this.router.get("/neptun/subjectTypes", (req, res, next) => {
       this.getSubjectType(req, res).catch(next);
     });
 
-    this.router.get("/curriculum", (req, res, next) => {
+    this.router.get("/neptun/curriculum", (req, res, next) => {
       this.getCurrciculum(req, res).catch(next);
     });
 
-    this.router.get("/subjectGroup", (req, res, next) => {
+    this.router.get("/neptun/subjectGroup", (req, res, next) => {
       this.getSubjectGroup(req, res).catch(next);
     });
 
-    this.router.get("/subjects", (req, res, next) => {
+    this.router.get("/neptun/subjects", (req, res, next) => {
       this.getSubjects(req, res).catch(next);
     });
 
-    this.router.get("/subjectCourses", (req, res, next) => {
+    this.router.get("/neptun/subjectCourses", (req, res, next) => {
       this.getSubjectCourses(req, res).catch(next);
     });
 
-    this.router.post("/signin", (req, res, next) => {
+    this.router.post("/neptun/signin", (req, res, next) => {
       this.signIn(req, res).catch(next);
     });
 
