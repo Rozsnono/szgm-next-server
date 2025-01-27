@@ -156,6 +156,21 @@ class NeptunController {
                 res.status(400).send({ message: error.message });
             }
         });
+        this.logout = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const resp = yield fetch("https://neptun-hweb.sze.hu/hallgato_ng/api/User/Logout", {
+                    method: "POST",
+                    headers: {
+                        "Authorization": "" + req.headers.authorization
+                    }
+                });
+                const data = yield resp.json();
+                res.send(data);
+            }
+            catch (error) {
+                res.status(400).send({ message: error.message });
+            }
+        });
         this.router.post("/neptun/login", (req, res, next) => {
             this.logIn(req, res).catch(next);
         });
@@ -179,6 +194,9 @@ class NeptunController {
         });
         this.router.post("/neptun/signin", (req, res, next) => {
             this.signIn(req, res).catch(next);
+        });
+        this.router.post("/neptun/logout", (req, res, next) => {
+            this.logout(req, res).catch(next);
         });
     }
 }
