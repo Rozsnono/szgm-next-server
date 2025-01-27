@@ -114,7 +114,6 @@ class NeptunController {
                     }
                 });
                 const data = yield resp.json();
-                console.log(data);
                 res.send(data);
             }
             catch (error) {
@@ -141,13 +140,14 @@ class NeptunController {
         });
         this.signIn = (req, res) => __awaiter(this, void 0, void 0, function* () {
             try {
+                const body = req.body;
                 const resp = yield fetch("https://neptun-hweb.sze.hu/hallgato_ng/api/SubjectApplication/SubjectSignin", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
                         "Authorization": "" + req.headers.authorization
                     },
-                    body: req.body
+                    body: JSON.stringify(body)
                 });
                 const data = yield resp.json();
                 res.send(data);

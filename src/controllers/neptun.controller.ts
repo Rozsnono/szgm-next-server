@@ -160,7 +160,6 @@ export default class NeptunController implements Controller {
         }
       );
       const data = await resp.json();
-      console.log(data);
       res.send(data);
     } catch (error: any | Error) {
       res.status(400).send({ message: error.message });
@@ -191,13 +190,14 @@ export default class NeptunController implements Controller {
 
   private signIn = async (req: Request, res: Response) => {
     try {
+      const body = req.body;
       const resp = await fetch("https://neptun-hweb.sze.hu/hallgato_ng/api/SubjectApplication/SubjectSignin", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           "Authorization": "" + req.headers.authorization
         },
-        body: req.body
+        body: JSON.stringify(body)
       });
 
       const data = await resp.json();
