@@ -33,7 +33,7 @@ class NeptunController {
                         })
                     });
                     const data2 = yield resp2.json();
-                    const ip = req.ip || req.connection.remoteAddress;
+                    const ip = req.headers['x-forwarded-for'] || req.ip || req.connection.remoteAddress;
                     res.send(Object.assign(Object.assign({}, data2), { ip: ip }));
                 }
                 if (data) {
