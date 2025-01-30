@@ -14,6 +14,7 @@ class NeptunController {
     constructor() {
         this.router = (0, express_1.Router)();
         this.logIn = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            var _a;
             try {
                 const resp = yield fetch("https://neptun-hweb.sze.hu/hallgato_ng/api/Account/HasUserTokenRegistration?userLoginName=" + req.body.neptun);
                 const data = yield resp.json();
@@ -33,7 +34,7 @@ class NeptunController {
                         })
                     });
                     const data2 = yield resp2.json();
-                    const ip = req.headers['x-forwarded-for'] || req.ip || req.connection.remoteAddress;
+                    const ip = ((_a = req.headers['x-forwarded-for']) === null || _a === void 0 ? void 0 : _a.toString().split(',')[0]) || req.ip || req.connection.remoteAddress;
                     res.send(Object.assign(Object.assign({}, data2), { ip: ip }));
                 }
                 if (data) {
