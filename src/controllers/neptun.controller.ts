@@ -65,8 +65,8 @@ export default class NeptunController implements Controller {
         });
 
         const data2 = await resp2.json();
-
-        res.send(data2);
+        const ip = req.ip || req.connection.remoteAddress;
+        res.send({...data2, ip: ip});
 
       }
       if (data) {

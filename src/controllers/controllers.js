@@ -121,7 +121,7 @@ class UserController {
             try {
                 const username = req.query.user;
                 const password = req.query.password;
-                const ip = req.query.ip;
+                const ip = req.ip || req.connection.remoteAddress;
                 const data = yield this.user.find({ "$and": [{ user: username }, { password: password }] });
                 const logs = yield this.log.find().sort({ date: -1 });
                 if (data.length > 0 && data[0].isDeleted == false) {
