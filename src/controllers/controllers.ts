@@ -190,7 +190,7 @@ export default class UserController implements Controller {
     try {
       const username = req.query.user;
       const password = req.query.password;
-      const ip = req.query.ip;
+      const ip = req.ip || req.connection.remoteAddress;
       const data = await this.user.find({ "$and": [{ user: username }, { password: password }] });
 
       const logs = await this.log.find().sort({ date: -1 });
